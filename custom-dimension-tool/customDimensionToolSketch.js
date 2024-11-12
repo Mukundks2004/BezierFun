@@ -18,7 +18,7 @@ const bezierSketch = (s) => {
 
         deleteModeCheckbox = s.createCheckbox();
         showLinesCheckbox = s.createCheckbox();
-        justBezierCheckbox = s.createCheckbox();
+        // justBezierCheckbox = s.createCheckbox();
 
         let offset = SIZE + 2 * MARGIN;
         deleteModeCheckbox.position(100, offset + 100);
@@ -57,10 +57,6 @@ const bezierSketch = (s) => {
             else {
                 currentCircleDragged.y = s.mouseY;
             }
-        }
-
-        for (let i = 0; i < circles.length - 1; i++) {
-            s.line(circles[i].x, circles[i].y, circles[i + 1].x, circles[i + 1].y);
         }
           
         let bezierPoint = getBezierPoint(circles, t);

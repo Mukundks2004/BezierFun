@@ -4,13 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <form action="./cubic-basic/cubicBasic.html">
-        <input type="submit" value="Go to Basic Cubic" />
-    </form>
-    <form action="./drag-and-drop/dragAndDrop.html">
-        <input type="submit" value="Go to Custom Dimension Tool" />
-    </form>
+    <!-- <div class="card" style="display: inline">
+        <img src="./img/simple-cubic.png" alt="simple cubic" style="width:20%">
+        <div class="card-container">
+            <h4><b>Simple Cubic</b></h4>
+            <p>Decomposition of Bezier into Beziers of equal degree</p>
+        </div>
+    </div> -->
+    <!-- <div class="card" style="display: inline">
+        <img src="./img/custom-dimension-tool.png" alt="custom dimension tool" style="width:20%">
+        <div class="card-container">
+            <h4><b>Custom Dimension Tool</b></h4>
+            <p>Make your own Beziers as complicated as you want</p>
+        </div>
+    </div> -->
+    <a href="./cubic-basic/cubicBasic.html">
+        <div class="card">
+            <img src="./img/simple-cubic.png" alt="Simple Cubic" class="card-img">
+            <div class="card-content">
+                <h4 class="card-title">Simple Cubic</h4>
+                <p class="card-description">Decomposition of Bezier into Beziers of equal degree.</p>
+            </div>
+        </div>
+    </a>
+    <a href="./custom-dimension-tool/customDimensionTool.html">
+        <div class="card">
+            <img src="./img/custom-dimension-tool.png" alt="Custom Dimension" class="card-img">
+            <div class="card-content">
+                <h4 class="card-title">Custom Dimension Tool</h4>
+                <p class="card-description">Make your own Beziers as complicated as you want.</p>
+            </div>
+        </div>
+    </a>
 </body>
 </html>
