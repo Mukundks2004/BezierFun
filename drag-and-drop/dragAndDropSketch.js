@@ -3,26 +3,27 @@ const CIRCLE_RADIUS = 12;
 const MARGIN = 20;
 const POINT_COLOUR = '#AA0000';
 const LINE_COLOUR = '#777777';
+const EPIC_POINT_COLOUR = '#DD0000';
 
 const bezierSketch = (s) => {
     let deleteModeCheckbox;
+    let showLinesCheckbox;
+    // let justBezierCheckbox;
     let circles = [];
     let currentCircleDragged = null;
     let t = 0;
 
     s.setup = () => {
-        deleteModeCheckbox = s.createCheckbox();
-
         s.createCanvas(SIZE + 2 * MARGIN, SIZE + 2 * MARGIN);
+
+        deleteModeCheckbox = s.createCheckbox();
+        showLinesCheckbox = s.createCheckbox();
+        justBezierCheckbox = s.createCheckbox();
 
         let offset = SIZE + 2 * MARGIN;
         deleteModeCheckbox.position(100, offset + 100);
-
-        // points.push(s.createVector(10, 30)); // Point 1
-        // points.push(s.createVector(20, 10)); // Point 2
-        // points.push(s.createVector(30, 5));  // Point 3
-        // points.push(s.createVector(40, 20)); // Point 4
-        // points.push(s.createVector(50, 30)); // Point 5
+        showLinesCheckbox.position(100, offset + 134);
+        // justBezierCheckbox.position(100, offset + 168);
     }
     
     s.draw = () => {
@@ -33,19 +34,6 @@ const bezierSketch = (s) => {
         s.fill(190);
         s.stroke('black');
         s.square(MARGIN, MARGIN, SIZE);
-
-        //Draw lines
-        s.stroke(LINE_COLOUR);
-        for (let i = 0; i < circles.length - 1; i++) {
-            s.line(circles[i].x, circles[i].y, circles[i+1].x, circles[i+1].y);
-        }
-
-        //Draw circles
-        s.fill(POINT_COLOUR);
-        s.stroke(POINT_COLOUR);
-        for (var circle of circles) {
-            s.ellipse(circle.x, circle.y, CIRCLE_RADIUS, CIRCLE_RADIUS);
-        }
 
         //Draggable
         if (!deleteModeCheckbox.checked() && currentCircleDragged !== null) {
@@ -71,16 +59,24 @@ const bezierSketch = (s) => {
             }
         }
 
-        
-
         for (let i = 0; i < circles.length - 1; i++) {
             s.line(circles[i].x, circles[i].y, circles[i + 1].x, circles[i + 1].y);
         }
           
         let bezierPoint = getBezierPoint(circles, t);
 
-        if (bezierPoint !== undefined) {
-            s.fill(255, 255, 0);
+        //Draw circles
+        s.fill(POINT_COLOUR);
+        s.stroke(POINT_COLOUR);
+        for (var circle of circles) {
+            s.ellipse(circle.x, circle.y, CIRCLE_RADIUS, CIRCLE_RADIUS);
+        }
+
+        if (bezierPoint !== undefined && circles.length > 1) {
+            s.fill(EPIC_POINT_COLOUR);
+            s.stroke(EPIC_POINT_COLOUR);
+            s.strokeWeight(3);
+
             s.ellipse(bezierPoint.x, bezierPoint.y, CIRCLE_RADIUS, CIRCLE_RADIUS);
               
             t += 0.005;
@@ -91,11 +87,16 @@ const bezierSketch = (s) => {
 
     function getBezierPoint(points, t) {
         let tempPoints = [...points];
+        s.stroke(LINE_COLOUR);
+        s.strokeWeight(2);
         
         while (tempPoints.length > 1)
         {
             let nextPoints = [];
             for (let i = 0; i < tempPoints.length - 1; i++) {
+                if (showLinesCheckbox.checked()) {
+                    s.line(tempPoints[i].x, tempPoints[i].y, tempPoints[i+1].x, tempPoints[i+1].y);
+                }
                 let x = s.lerp(tempPoints[i].x, tempPoints[i + 1].x, t);
                 let y = s.lerp(tempPoints[i].y, tempPoints[i + 1].y, t);
                 nextPoints.push(s.createVector(x, y));
