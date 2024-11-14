@@ -1,29 +1,27 @@
 const SIZE = 300;
 const CIRCLE_RADIUS = 12;
 const MARGIN = 20;
-const POINT_COLOUR = '#AA0000';
-const LINE_COLOUR = '#777777';
+const POINT_COLOUR = '#00AA00';
+const LINE_COLOUR = '#00DD00';
+const LINE_WIDTH = 4;
 const EPIC_POINT_COLOUR = '#DD0000';
 
 const bezierSketch = (s) => {
     let deleteModeCheckbox;
-    let showLinesCheckbox;
-    // let justBezierCheckbox;
+    let invisibleModeCheckbox;
     let circles = [];
     let currentCircleDragged = null;
-    let t = 0;
+    let points;
 
     s.setup = () => {
+        
         s.createCanvas(SIZE + 2 * MARGIN, SIZE + 2 * MARGIN);
-
         deleteModeCheckbox = s.createCheckbox();
-        showLinesCheckbox = s.createCheckbox();
-        // justBezierCheckbox = s.createCheckbox();
-
+        invisibleModeCheckbox = s.createCheckbox();
         let offset = SIZE + 2 * MARGIN;
         deleteModeCheckbox.position(100, offset + 100);
-        showLinesCheckbox.position(100, offset + 134);
-        // justBezierCheckbox.position(100, offset + 168);
+        invisibleModeCheckbox.position(110, offset + 134);
+
     }
     
     s.draw = () => {
@@ -58,49 +56,57 @@ const bezierSketch = (s) => {
                 currentCircleDragged.y = s.mouseY;
             }
         }
-          
-        let bezierPoint = getBezierPoint(circles, t);
-
+        
+        drawBezier(circles);
+        if (!invisibleModeCheckbox.checked()) {
+            s.strokeWeight(LINE_WIDTH / 2);
+            s.stroke(LINE_COLOUR);
+            if (circles.length > 2) {
+                for (let r = 0; r < circles.length - 1; r++) {
+                    s.line(circles[r].x, circles[r].y, circles[r + 1].x, circles[r + 1].y);
+                }
+            }
+        }
+        
         //Draw circles
-        s.fill(POINT_COLOUR);
-        s.stroke(POINT_COLOUR);
-        for (var circle of circles) {
-            s.ellipse(circle.x, circle.y, CIRCLE_RADIUS, CIRCLE_RADIUS);
+        if (!invisibleModeCheckbox.checked()) {
+            s.fill(POINT_COLOUR);
+            s.stroke(POINT_COLOUR);
+            for (var circle of circles) {
+                s.ellipse(circle.x, circle.y, CIRCLE_RADIUS, CIRCLE_RADIUS);
+            }
         }
-
-        if (bezierPoint !== undefined && circles.length > 1) {
-            s.fill(EPIC_POINT_COLOUR);
-            s.stroke(EPIC_POINT_COLOUR);
-            s.strokeWeight(3);
-
-            s.ellipse(bezierPoint.x, bezierPoint.y, CIRCLE_RADIUS, CIRCLE_RADIUS);
-              
-            t += 0.005;
-            if (t > 1) t = 0;
-        }
-          
     }
 
-    function getBezierPoint(points, t) {
-        let tempPoints = [...points];
-        s.stroke(LINE_COLOUR);
-        s.strokeWeight(2);
-        
-        while (tempPoints.length > 1)
-        {
-            let nextPoints = [];
-            for (let i = 0; i < tempPoints.length - 1; i++) {
-                if (showLinesCheckbox.checked()) {
-                    s.line(tempPoints[i].x, tempPoints[i].y, tempPoints[i+1].x, tempPoints[i+1].y);
-                }
-                let x = s.lerp(tempPoints[i].x, tempPoints[i + 1].x, t);
-                let y = s.lerp(tempPoints[i].y, tempPoints[i + 1].y, t);
-                nextPoints.push(s.createVector(x, y));
-            }
-            tempPoints = nextPoints;
+    function drawBezier(points) {
+        if (points.length < 2) {
+            return;
         }
+
+        s.noFill();
+        s.stroke(0);
+        s.strokeWeight(LINE_WIDTH);
+        s.beginShape();
         
-        return tempPoints[0];
+        let n = points.length - 1;
+        let step = 0.01;
+      
+        for (let t = 0; t <= 1; t += step) {
+            let tempPoints = [...points];
+            
+            for (let r = 1; r <= n; r++) {
+                for (let i = 0; i <= n - r; i++) {
+                    tempPoints[i] = {
+                        x: s.lerp(tempPoints[i].x, tempPoints[i + 1].x, t),
+                        y: s.lerp(tempPoints[i].y, tempPoints[i + 1].y, t)
+                    };
+                }
+            }
+        
+            s.vertex(tempPoints[0].x, tempPoints[0].y);
+        }
+      
+        s.endShape();
     }
 
     s.mousePressed = () => {

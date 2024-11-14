@@ -8,9 +8,9 @@ const SAMPLE_BEZIER_POINTS = [
 const SIZE = 300;
 const CIRCLE_SIZE = 12;
 const MARGIN = 20;
-const CIRCLE_COLOUR = 'yellow';
-const START_COLOUR = 'red';
-const END_COLOUR = 'maroon';
+const CIRCLE_COLOUR = '#0000FF';
+const START_COLOUR = '#00AAAA';
+const END_COLOUR = '#0000AA';
 const POINT_SPEED = 0.008;
 
 const bezierSketch = (s) => {
